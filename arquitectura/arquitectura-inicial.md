@@ -1,84 +1,60 @@
-# Arquitectura inicial del sistema
+```mermaid
+flowchart TD
+    subgraph USUARIOS["USUARIOS DEL SISTEMA"]
+        direction LR
+        ADM["Administrador"]
+        REC["Recepcionista"]
+    end
 
-## 3. Estilo arquitectónico propuesto
+    subgraph PRES["1. CAPA DE PRESENTACIÓN"]
+        direction LR
+        P1["Inicio de sesión"]
+        P2["Panel principal"]
+        P3["Formularios de habitaciones y huéspedes"]
+        P4["Pantallas de reservas y disponibilidad"]
+        P5["Pantallas de check-in y check-out"]
+        P6["Consultas y reportes"]
+    end
 
-Se propone una **arquitectura en tres capas**:
+    subgraph NEG["2. CAPA DE LÓGICA DE NEGOCIO"]
+        direction LR
+        N1["Autenticación y autorización"]
+        N2["Gestión de habitaciones<br/>Registro, edición y estado"]
+        N3["Gestión de huéspedes"]
+        N4["Gestión de reservas<br/>Registro y disponibilidad"]
+        N5["Gestión de estadías"]
+        N6["Consultas y reportes<br/>Consultas y resúmenes básicos"]
+    end
 
-1. **Capa de presentación:** interfaz utilizada por el administrador y el recepcionista.
-2. **Capa de lógica de negocio:** aplica las reglas de gestión de habitaciones, huéspedes, reservas y estadías.
-3. **Capa de datos:** almacena y recupera la información del sistema.
+    subgraph DAT["3. CAPA DE DATOS"]
+        direction LR
+        BD["Base de datos"]
+        D1["Usuarios y roles"]
+        D2["Habitaciones"]
+        D3["Huéspedes"]
+        D4["Reservas"]
+        D5["Registros de estadía / movimientos"]
+        BD --- D1 & D2 & D3 & D4 & D5
+    end
 
+    USUARIOS --> PRES
+    PRES -->|Solicitudes| NEG
+    NEG -->|Operaciones de datos| DAT
+```
+```mermaid
+flowchart TD
+    subgraph CLI["EQUIPO DEL ADMINISTRADOR O RECEPCIONISTA"]
+        UI["Interfaz del sistema"]
+    end
 
-4. Diagrama general de arquitectura
+    subgraph APP["APLICACIÓN DEL SISTEMA"]
+        AP["Presentación + lógica de negocio"]
+    end
 
+    subgraph DB["SERVICIO DE BASE DE DATOS"]
+        BD["Usuarios, huéspedes, habitaciones y reservas"]
+    end
 
-┌─────────────────────────────────────────────────────────────┐
-│                     USUARIOS DEL SISTEMA                    │
-│              Administrador        Recepcionista             │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    1. CAPA DE PRESENTACIÓN                 │
-│                                                             │
-│  • Inicio de sesión                                         │
-│  • Panel principal                                          │
-│  • Formularios de habitaciones y huéspedes                  │
-│  • Pantallas de reservas y disponibilidad                  │
-│  • Pantallas de check-in y check-out                        │
-│  • Consultas y reportes                                     │
-└──────────────────────────────┬──────────────────────────────┘
-                               │ Solicitudes
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  2. CAPA DE LÓGICA DE NEGOCIO              │
-│                                                             │
-│  ┌───────────────────┐  ┌────────────────────────────────┐ │
-│  │ Autenticación y   │  │ Gestión de habitaciones        │ │
-│  │ autorización      │  │ Registro, edición y estado     │ │
-│  └───────────────────┘  └────────────────────────────────┘ │
-│  ┌───────────────────┐  ┌────────────────────────────────┐ │
-│  │ Gestión de        │  │ Gestión de reservas            │ │
-│  │ huéspedes         │  │ Registro y disponibilidad      │ │
-│  └───────────────────┘  └────────────────────────────────┘ │
-│  ┌───────────────────┐  ┌────────────────────────────────┐ │
-│  │ Gestión de        │  │ Consultas y reportes            │ │
-│  │ estadías          │  │ Consultas y resúmenes básicos  │ │
-│  └───────────────────┘  └────────────────────────────────┘ │
-└──────────────────────────────┬──────────────────────────────┘
-                               │ Operaciones de datos
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                       3. CAPA DE DATOS                      │
-│                                                             │
-│  Base de datos:                                             │
-│  • Usuarios y roles                                         │
-│  • Habitaciones                                              │
-│  • Huéspedes                                                 │
-│  • Reservas                                                  │
-│  • Registros de estadía / movimientos                       │
-└─────────────────────────────────────────────────────────────┘
-
-
-## 11. Despliegue lógico propuesto
-
-
-┌──────────────────────────────┐
-│ Equipo del administrador o   │
-│ recepcionista                │
-│ Interfaz del sistema         │
-└──────────────┬───────────────┘
-               │ Red local o conexión segura
-               ▼
-┌──────────────────────────────┐
-│ Aplicación del sistema       │
-│ Presentación + lógica        │
-│ de negocio                   │
-└──────────────┬───────────────┘
-               │
-               ▼
-┌──────────────────────────────┐
-│ Servicio de base de datos    │
-│ Usuarios, huéspedes,         │
-│ habitaciones y reservas      │
-└──────────────────────────────┘
+    CLI -->|Red local o conexión segura| APP
+    APP --> DB
+```
